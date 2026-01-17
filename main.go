@@ -15,6 +15,7 @@ func main() {
 		return
 	}
 
+	var str = ""
 	for {
 		bytes := make([]byte, 8)
 		n, err := file.Read(bytes)
@@ -25,7 +26,19 @@ func main() {
 			fmt.Println(err)
 			return
 		}
-		str := fmt.Sprintf("read: %s\n", bytes[:n])
-		fmt.Print(str)
+		str += string(bytes[:n])
 	}
+
+	start := 0
+	for i, char := range str {
+		if char == '\n' {
+			printFormatedLine(str[start:i])
+			start = i + 1
+		}
+	}
+}
+
+func printFormatedLine(str string) {
+	formated_string := fmt.Sprintf("read: %s\n", str)
+	fmt.Print(formated_string)
 }
