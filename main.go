@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
 	"io"
 	"log"
@@ -17,8 +18,8 @@ func main() {
 
 	var str = ""
 	for {
-		bytes := make([]byte, 8)
-		n, err := file.Read(bytes)
+		data := make([]byte, 8)
+		n, err := file.Read(data)
 		if err == io.EOF {
 			break
 		}
@@ -26,15 +27,14 @@ func main() {
 			fmt.Println(err)
 			return
 		}
-		str += string(bytes[:n])
-	}
-
-	start := 0
-	for i, char := range str {
-		if char == '\n' {
-			printFormatedLine(str[start:i])
-			start = i + 1
+		data = data[:n]
+		if i := bytes.IndexByte(data, '\n'); i != -1 {
+			str += string(data[:i])
+			printFormatedLine(str)
+			data = data[i+1:]
+			str = ""
 		}
+		str += string(data)
 	}
 }
 
